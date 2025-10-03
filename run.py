@@ -28,7 +28,7 @@ def main():
     plt.plot(t[:zoom_end], c4[:zoom_end], label=f"C4 {frequency_c4:.2f} Hz")
     plt.plot(t[:zoom_end], f4[:zoom_end], label=f"F4 {frequency_f4:.2f} Hz",alpha=0.85)
     
-    plt.title("C4 and F4(time-domain zoom, first 25 ms)")
+    plt.title("C4 and F4 (time-domain zoom, first 25 ms)")
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
     plt.grid(True)
@@ -38,20 +38,33 @@ def main():
 
 
     #figure2 full-duration gated tones 
-    window = rectangular_window(0, min(gate_length, duration), duration, sample_rate) 
-    c4_gated = c4*window
-    f4_gated = f4*window
+    delay_f4 = 0.35 #seconds
+    window_c4 = rectangular_window(0.0, min(gate_length, duration), duration, sample_rate) 
+    window_f4 = rectangular_window(delay_f4, min(delay_f4 +gate_length, duration), duration, sample_rate) 
 
+    #apply gates
+    c4_gated = c4 * window_c4
+    f4_gated = f4 * window_f4
+
+    mix = c4_gated + f4_gated
+
+    #downsample for readability over time 1.5s 
+    plot_step = max(1, sample_rate//200) 
+    
     plt.figure(figsize=(10,6))
-    plt.plot(t, c4_gated, label=f"C4 gated {frequency_c4:.2f} Hz")
-    plt.plot(t, f4_gated, label=f"F4 gated {frequency_f4:.2f} Hz",alpha=0.85)
+    plt.plot(t[::plot_step], c4_gated[::plot_step], label=f"C4 0-{gate_length:.2f} s")
+    plt.plot(t[::plot_step], f4_gated[::plot_step], label=f"F4 {delay_f4:.2f}-{min(delay_f4 + gate_length, duration):.2f}s", alpha=0.85)
+
+    plt.plot(t[::plot_step], mix[::plot_step], label="mix = C4 + F4", linewidth=2)
+
+    
     plt.xlabel("Time [s]")
     plt.ylabel("Amplitude")
-    plt.title("Gating: C4 and F4 with 1.0 s rectangular window")
+    plt.title(" C4 only -> overlap -> and F4 only (delayed entrance + mix) ")
     plt.grid(True)
     plt.legend()
     plt.tight_layout()
-    plt.savefig("c4_f4_gated_time.png", dpi=150)
+    plt.savefig("c4_f4_delayed_time.png", dpi=150)
 
     plt.show()
 
