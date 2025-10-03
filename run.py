@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-from signals import generate_sine_wave, rectangular_window 
+from signals import generate_sine_wave, gate_signal, mix_signals
 
 def main():
     #Settings
@@ -39,14 +39,11 @@ def main():
 
     #figure2 full-duration gated tones 
     delay_f4 = 0.35 #seconds
-    window_c4 = rectangular_window(0.0, min(gate_length, duration), duration, sample_rate) 
-    window_f4 = rectangular_window(delay_f4, min(delay_f4 +gate_length, duration), duration, sample_rate) 
 
-    #apply gates
-    c4_gated = c4 * window_c4
-    f4_gated = f4 * window_f4
+    c4_gated = gate_signal(c4, 0.0, gate_length, duration, sample_rate)
+    f4_gated = gate_signal(f4, delay_f4, delay_f4 + gate_length, duration, sample_rate)
 
-    mix = c4_gated + f4_gated
+    mix = mix_signals(c4_gated, f4_gated) 
 
     #downsample for readability over time 1.5s 
     plot_step = max(1, sample_rate//200) 

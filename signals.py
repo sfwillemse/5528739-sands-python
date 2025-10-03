@@ -9,4 +9,12 @@ def rectangular_window(start_time, end_time, duration, sample_rate):
     N = int(round(duration*sample_rate)) 
     t = np.linspace(0, duration, N, endpoint=False)
     return ((t>=start_time) & (t<end_time)).astype(float)
-    
+
+
+def gate_signal(x: np.ndarray, start_time: float, end_time: float, duration: float, sample_rate: int) -> np.ndarray:
+    w = rectangular_window(start_time, end_time, duration, sample_rate)
+    return x * w
+
+
+def mix_signals(*signals: np.ndarray)-> np.ndarray: 
+    return sum(signals)
