@@ -47,4 +47,44 @@ def test_rectangular_window_boundaries():
     # index 4 is t=0.50s -> should be 0 
     assert w[4] == 0.0 and w[3] == 1.0 
 
+def test_mix_signals_sum_three_arrays():
+    a = np.array([1.0, 2.0, 3.0])
+    b = np.array([0.5, -1.0, 4.0])
+    c = np.array([2.0, 0.0, -2.0])
+
+    two = mix_signals(a, b)
+    three = mix_signals(a, b, c)
+
+    assert np.allclose(two, np.array([1.5, 1.0, 7.0]))
+    assert np.allclose(three, np.array([3.5, 1.0, 5.0]))
+
+def test_mix_signals_does_not_modify_inputs():
+    a = np.array([1.0, 2.0, 3.0])
+    b = np.array([0.5, -1.0, 4.0])
+    a_copy = a.copy()
+    b_copy = b.copy()
+
+    _ = mix_signals(a, b) #ignore the result 
+    #originals should be unchanged
+    assert np.allclose(a, a_copy)
+    assert np.allclose(b, b_copy)
+
+def test_gate_signal_full_and_empty_window():
+    fs = 8
+    x = generate_sine_wave(2.0, duration=1.0, sample_rate= fs)
+
+    #Full-on 
+    g_full = gate_signal(x,0.0, 1.0, duration=1.0, sample_rate=fs)
+    assert np.allclose(g_full, x)
+
+    #empty 
+    g_empty = gate_signal(x, 0.5, 0.5, duration=1.0, sample_rate=fs)
+    assert np.allclose(g_empty, np.zeros_like(x))
+
+
+
+
+
+
+
 
