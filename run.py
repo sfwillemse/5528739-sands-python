@@ -1,3 +1,11 @@
+"""
+ Duet simulation: C4 then F4 (a perfect fourth) with a delayed entrance. 
+
+ Generates two sinusoidsd C4 = 261.63 Hz, F4 = 349.23 Hz, applies triangular gates (F4 starts at 0.35s), mixes them them, and saves:
+
+- c4_f4_zoom.png         (first 25 ms so cycles are visible)
+- c4_f4_delayed_time.png (C4-only) -> overlap -> F4-only + mix)
+"""
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -5,6 +13,8 @@ import matplotlib.pyplot as plt
 from signals import generate_sine_wave, gate_signal, mix_signals
 
 def main():
+    """Generate signals, apply gates/delay, plot, and save the two PNG figures."""
+
     #Settings
     duration = 1.5
     sample_rate = 8000
