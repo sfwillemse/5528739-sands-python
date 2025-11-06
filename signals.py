@@ -16,5 +16,18 @@ def gate_signal(x: np.ndarray, start_time: float, end_time: float, duration: flo
     return x * w
 
 
-def mix_signals(*signals: np.ndarray)-> np.ndarray: 
-    return sum(signals)
+def mix_signals(*signals):
+    if len(signals) == 0:
+        raise ValueError("Need at least one signal")
+    
+    n = len(signals[0])
+    for s in signals: 
+        if len(s) != n: 
+            raise ValueError("All signals must have the same length")
+        
+    total = signals[0].copy()
+    for s in signals[1:]:
+        total = total + s 
+    return total 
+
+
