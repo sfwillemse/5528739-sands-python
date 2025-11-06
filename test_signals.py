@@ -64,7 +64,7 @@ def test_mix_signals_does_not_modify_inputs():
     a_copy = a.copy()
     b_copy = b.copy()
 
-    _ = mix_signals(a, b) #ignore the result 
+    _ = mix_signals(a, b) 
     #originals should be unchanged
     assert np.allclose(a, a_copy)
     assert np.allclose(b, b_copy)
