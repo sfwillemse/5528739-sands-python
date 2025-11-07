@@ -1,5 +1,26 @@
 import numpy as np
 
+
+def _n_samples(duration, sample_rate):
+    """
+    Compute the number of discrete samples, N = round(duration * sample_rate).
+
+    Parameters: 
+        duration (float) : Signal length in seconds. Must be >= 0.
+        sample_rate (int or float): Samples per second. Must be > 0.
+
+    Returns:
+        int: Number of samples N. 
+
+    Raises: 
+        ValueError: If duration < 0 or sample_rate <= 0.
+    """
+    if duration < 0:
+        raise ValueError("duration mustbe >= 0")
+    if sample_rate <=0:
+        raise ValueError("sample_rate mustbe >0")
+    return int(round(duration * sample_rate))
+
 def generate_sine_wave(frequency, duration, sample_rate):
     """
     Generating a 1D sine wave. 

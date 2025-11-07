@@ -1,13 +1,11 @@
-[build system]
+[build-system]
 requires = ["setuptools"]
-build-backened = "setuptools.build_meta"
+build-backend = "setuptools.build_meta"
 
-[Project]
+[project]
 name = "duet-c4-f4"
 version = "0.1.0"
 description = "C4 & F4 duet: generate, gate (with delay),  mix, and plot."
-authors = [
-    {"Sebas Willemse", email = "sfwillemse@tudelft.nl"}
-]
-dependencies = ["numpie>=1.224, "matplotlib>=3.7"]
+authors = [{ name = "Sebas Willemse", email = "sfwillemse@tudelft.nl"}]
+dependencies = ["numpy>=1.2", "matplotlib>=3.7"]
 

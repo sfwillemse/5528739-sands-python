@@ -1,5 +1,19 @@
 import numpy as np 
-from signals import generate_sine_wave, rectangular_window, gate_signal, mix_signals
+from signals import generate_sine_wave, rectangular_window, gate_signal, mix_signals, _n_samples
+
+def test_n_samples_correct_and_invalid():
+    """
+   Check normal rounding cases and that invalid inputs raise ValueError
+    """
+    assert _n_samples(1.0, 8) == 8
+    assert _n_samples(0.5, 8) == 4 
+
+    try:
+        _n_samples(-0.1, 8) #duration < 0
+        assert False, "expected ValueError for duration<0"
+    except ValueError:
+        pass 
+
 
 def test_generate_sine_wave_length_and_type():
     """
