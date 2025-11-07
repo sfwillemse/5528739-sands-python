@@ -2,13 +2,17 @@ import numpy as np
 from signals import generate_sine_wave, rectangular_window, gate_signal, mix_signals
 
 def test_generate_sine_wave_length_and_type():
+    """
+    Ensures  'generate sine_wave' returns a NumPy array of the requested length and type. 
+
+    """
     x = generate_sine_wave(2.0, duration=1.0, sample_rate=8) # 8 samples 
     assert isinstance(x, np.ndarray)
     assert len(x) == 8
 
 
 def test_generate_sine_wave_known_values():
-    #f=2 Hz, fs=8 -> x[n] = sin(2π*n/8) = sin(π*n/2)
+    """f=2 Hz, fs=8 samples match [0, 1, 0, -1, ...]"""
     x = generate_sine_wave(2.0, duration=1.0, sample_rate=8)
     expected = np.array([
         0.0, 1.0, 0.0, -1.0, 
@@ -17,7 +21,7 @@ def test_generate_sine_wave_known_values():
     assert np.allclose(x, expected, atol=1e-12)
 
 def test_generate_sine_wave_bounds_and_zero_duration():
-    # amplitudes should be whitin [-1, 1]
+    """amplitudes should be whitin [-1, 1]; zero duration returns an empty array."""
     x = generate_sine_wave(5.0, duration=0.2, sample_rate=100)
     assert np.all(x <= 1.0) and np.all(x >=-1.0)
 
@@ -26,15 +30,19 @@ def test_generate_sine_wave_bounds_and_zero_duration():
     assert isinstance(x0, np.ndarray) and x0.size == 0
 
 def test_rectangular_window_basic():
-    # 1 second, 8 Hz -> samples at t = 0.00, 0.125, 0.250, 0.375, ...
+    """
+    Window is ON from 0.225s to 0.50s (start included, end not). On an 8-point grid, 
+    that means only indices 2 and 3 are 1.
+    """
     w = rectangular_window(0.25, 0.50, duration=1.0, sample_rate=8)
-    #gate should be 1 for t in [0.25, 0.50) -> indices 2 and 3
     assert len(w) == 8
     assert list(w[:5]) == [0.0, 0.0, 1.0, 1.0, 0.0]
 
 def test_rectangular_window_boundaries():
+    """
+    Edge rules: duration -> all ones; zero width -> all zeros; the end time is NOT included. 
+    """
     fs = 8 
-    #full-on window: start=0 end=duration -> all ones
     w_full = rectangular_window(0.0, 1.0, duration=1.0, sample_rate=fs)
     assert np.allclose(w_full, np.ones(fs))
 
@@ -48,6 +56,9 @@ def test_rectangular_window_boundaries():
     assert w[4] == 0.0 and w[3] == 1.0 
 
 def test_mix_signals_sum_three_arrays():
+    """
+    Adding signals works element-by-element for 2 or 3 inputs.
+    """
     a = np.array([1.0, 2.0, 3.0])
     b = np.array([0.5, -1.0, 4.0])
     c = np.array([2.0, 0.0, -2.0])
@@ -59,6 +70,9 @@ def test_mix_signals_sum_three_arrays():
     assert np.allclose(three, np.array([3.5, 1.0, 5.0]))
 
 def test_mix_signals_does_not_modify_inputs():
+    """
+    Mixing should not change the originial arrays.
+    """
     a = np.array([1.0, 2.0, 3.0])
     b = np.array([0.5, -1.0, 4.0])
     a_copy = a.copy()
@@ -70,6 +84,9 @@ def test_mix_signals_does_not_modify_inputs():
     assert np.allclose(b, b_copy)
 
 def test_gate_signal_full_and_empty_window():
+    """
+    Full window -> same signal back. Zero-width window -> all zero. 
+    """
     fs = 8
     x = generate_sine_wave(2.0, duration=1.0, sample_rate= fs)
 
